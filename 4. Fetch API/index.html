@@ -18,19 +18,155 @@
             // Answer: HTTP requests are messages sent by the client to initiate an action on the server. Responses are messages returned by the server to provid the result of the requested action.
             // HTTP verbs include GET (retrieve data), POST (create data), PUT(update data), DELETE (delete data), etc.
 
-            // Todo 4.1 Fetch the list of users. Outout the first and second page of users.
+            // TDONE Fetch the list of users. Outout the first and second page of users.
+            const apiUrl = 'https://reqres.in/api/users?page=2';
 
-            // Todo 4.2 Fetch the information about a single user. Display their information
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(userData => {
+                    console.log('User Data:', userData);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
-            // Todo 4.3 Create a user
+            // DONE Fetch the information about a single user. Display their information
 
+            const apiUser = 'https://reqres.in/api/users/2';
+
+            fetch(apiUser)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network repsonse was not ok');
+                    }
+                    return response.json();
+                })
+                .then(userData => {
+                    console.log('User Information:', userData);
+
+                    displayUserInfo(userData.data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            function displayUserInfo(user) {
+                const userInfo = document.createElement('div');
+                userInfo.innerHTML = `
+                    <h2>User Information</h2>
+                    <p>ID: ${user.id}</p>
+                    <p>Name: ${user.first_name} ${user.last_name}</p>
+                    <p>Email: ${user.email}</p>
+                    <img src="${user.avatar}" alt="User Avatar">
+                `;
+                document.body.appendChild(userInfo);
+            }
+            // DONE Create a user
+            let createdUser;
+
+            const apiCreate = 'https://reqres.in/api/users';
+
+            const userData = {
+                name: 'Peter Parker',
+                job: 'Software Engineer',
+            };
+
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            };
+
+            fetch(apiCreate, fetchOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(createdUserData => {
+                    console.log('User Created:', createdUserData);
+                    createdUser = createdUserData;
+                    displayCreateInfo(createdUserData);
             // Todo 4.4 Update the information of the user that you have created
+            const apiUpdate = `https://reqres.in/api/users/${createdUserData.id}`;
 
+            const updateUser = {
+                name: 'John Doe',
+                job: 'System Analyst',
+            };
+
+            const fetchOptionsUpdate = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateUser),
+            };
+
+            return fetch(apiUpdate, fetchOptionsUpdate);
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(updatedUserData => {
+                console.log('User Updated:', updatedUserData);
+                displayUpdateInfo(updatedUserData);
             // Todo 4.5 Delete the user that you have created
+            const apiDelete = `https://reqres.in/api/users/${createdUser.id}`;
+            const fetchOptionsDelete = {
+                method: 'DELETE',
+            };
 
+            return fetch(apiDelete, fetchOptionsDelete);
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                console.log('User Deleted');
+            })
+            .catch(error => {
+                console.error('Error', error);
+            });
+
+            function displayCreateInfo(createdUser) {
+                const createInfo = document.createElement('div');
+                createInfo.innerHTML = `
+                <h2>User Creation Information</h2>
+                <p>ID: ${createdUser.id}</p>
+                <p>Name: ${createdUser.name}</p>
+                <p>Job: ${createdUser.job}</p>
+                <p>Created At: ${createdUser.createdAt}</p>
+            `;
+                document.body.appendChild(createInfo);
+            }
+
+            function displayUpdateInfo(updatedUser) {
+                const updateInfo = document.createElement('div');
+                updateInfo.innerHTML = `
+                <h2>User Update Information</h2>
+                <p>ID: ${createdUser.id}</p>
+                <p>Name: ${updatedUser.name}</p>
+                <p>Job: ${updatedUser.job}</p>
+                <p>Updated At: ${updatedUser.updatedAt}</p>
+            `;
+                document.body.appendChild(updateInfo);
+            }
             // Checkpoint 4.2 What is the difference between callbacks, then-catch vs await-try-catch? When should you use one over the other
-            // Answer: Callbacks and then-catch are traditional ways of handling asynchronous code, while await-try-catch is a more modern and readable approach.
-            // Use await-try-catch for better readability and error handling, especially in async functions
+            // Answer: Callbacks can be useful in scenarios where you have a small number of asynchronous operations and want to keep the code simple.
+            // then-catch provide a more structured and readable way to handle asynchronous code compared to callbacks.
+            // await-try-catch offers a more synchronous-like structure, making the code cleaner and more readable.
         }
         start()
 
