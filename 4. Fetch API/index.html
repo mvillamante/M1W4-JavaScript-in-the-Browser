@@ -19,9 +19,9 @@
             // HTTP verbs include GET (retrieve data), POST (create data), PUT(update data), DELETE (delete data), etc.
 
             // TDONE Fetch the list of users. Outout the first and second page of users.
-            const apiUrl = 'https://reqres.in/api/users?page=2';
+            const apiUrl = 'https://reqres.in/api/users?page=1';
 
-            fetch(apiUrl)
+            fetch(apiUrl) 
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -29,7 +29,14 @@
                     return response.json();
                 })
                 .then(userData => {
-                    console.log('User Data:', userData);
+                    console.log('Users - Page 1:', userData);
+
+                    // Fetch the second page of users
+                    return fetch('https://reqres.in/api/users?page=2');
+                })
+                .then(response => response.json())
+                .then(userData => {
+                    console.log('Users - Page 2:', userData);
                 })
                 .catch(error => {
                     console.error('Error:', error);
